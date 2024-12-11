@@ -1,7 +1,5 @@
-
-"use client"; 
-
 import React, { useEffect, useRef, useState } from "react";
+import EpassTransaction from "./EpassTransaction"; // Import EpassTransaction component
 
 interface SearchFormProps {
   onSearch: (cardId: string) => void;
@@ -11,23 +9,27 @@ interface SearchFormProps {
   setCardId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearch, error, result, cardId, setCardId }) => {
-  const [searched, setSearched] = useState(false); // Track if the search was triggered
-  const [inputError, setInputError] = useState(""); // Input validation error
+const SearchForm: React.FC<SearchFormProps> = ({
+  onSearch,
+  error,
+  result,
+  cardId,
+  setCardId,
+}) => {
+  const [searched, setSearched] = useState(false);
+  const [inputError, setInputError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const cardIdRef = useRef<HTMLInputElement>(null);
 
-  // Focus on the input field when the component mounts
   useEffect(() => {
     cardIdRef.current?.focus();
   }, []);
 
-  // Handle search logic on button click
   const handleSearchClick = () => {
     if (!validateCardId()) return;
     triggerSearch();
   };
 
-  // Handle search logic on pressing "Enter" key
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       if (!validateCardId()) return;
@@ -35,41 +37,49 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, error, result, cardId
     }
   };
 
-  // Validate the card ID input
   const validateCardId = (): boolean => {
     if (!cardId.trim()) {
       setInputError("Please enter a valid Card ID");
-      setSearched(false); // Clear searched state when the input is invalid
+      setSearched(false);
       return false;
     }
     setInputError("");
     return true;
   };
 
-  // Trigger the search and update the searched state
   const triggerSearch = () => {
     onSearch(cardId.trim());
     setSearched(true);
   };
 
-  // Determine if no result was found
   const shouldShowError = searched && !result && cardId.trim() && !error;
 
-  // Clear the search state if the input is empty
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCardId(e.target.value);
     if (!e.target.value.trim()) {
-      setSearched(false); // Reset searched state when input is cleared
-      setInputError("");   // Reset error message if input is cleared
+      setSearched(false);
+      setInputError("");
     }
   };
 
-  // Check input on keyup, clear search if input is empty or null
   const handleKeyUp = () => {
     if (!cardId.trim()) {
-      setSearched(false); // Reset searched state if input is empty
-      setInputError("");  // Clear any existing input error
+      setSearched(false);
+      setInputError("");
     }
+  };
+
+  const handleOpenFormClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsModalOpen(false); // Close the EpassTransaction form
+  };
+
+  const handleCloseResultCard = () => {
+    setSearched(false); // Close the result card
+    setCardId(""); // Reset cardId
   };
 
   return (
@@ -84,8 +94,8 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, error, result, cardId
           type="text"
           placeholder="Enter card ID"
           value={cardId}
-          onChange={handleInputChange} // Handle input change
-          onKeyUp={handleKeyUp} // Check input on keyup
+          onChange={handleInputChange}
+          onKeyUp={handleKeyUp}
           className="px-4 py-2 border border-gray-300 rounded-md"
           autoComplete="off"
           onKeyDown={handleKeyPress}
@@ -99,20 +109,43 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, error, result, cardId
       </div>
 
       {/* Input Error Message */}
-      {inputError && (
-        <p className="text-red-500">
-          {inputError}
-        </p>
-      )}
+      {inputError && <p className="text-red-500">{inputError}</p>}
 
       {/* Result Section */}
       {searched && cardId.trim() && result && (
         <div className="p-4 bg-white border rounded-md shadow-md w-96">
-          <h2 className="text-xl font-semibold mb-4">Card Details</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold mb-4">Card Details</h2>
+            <button
+              onClick={handleCloseResultCard}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              Close
+            </button>
+          </div>
           <p><strong>Card ID:</strong> {result.card_id}</p>
           <p><strong>Employee ID:</strong> {result.employee_id}</p>
           <p><strong>Total AR:</strong> {result.total_ar}</p>
           <p><strong>Total CA:</strong> {result.total_ca}</p>
+
+          {/* Button to trigger EpassTransaction modal */}
+          <button
+            onClick={handleOpenFormClick}
+            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Open Epass Transaction Form
+          </button>
+
+          {/* Render EpassTransaction modal if open */}
+          {isModalOpen && (
+            <EpassTransaction 
+              initialCardId={result.card_id} 
+              employeeId={result.employee_id} 
+              totalAr={result.total_ar} 
+              totalCa={result.total_ca} 
+              onClose={handleCloseForm} 
+            />
+          )}
         </div>
       )}
 
@@ -124,11 +157,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, error, result, cardId
       )}
 
       {/* General Error Message */}
-      {searched && error && (
-        <p className="text-red-500">
-          {error}
-        </p>
-      )}
+      {searched && error && <p className="text-red-500">{error}</p>}
     </div>
   );
 };

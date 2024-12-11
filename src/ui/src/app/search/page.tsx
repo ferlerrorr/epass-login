@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import SearchForm from "../components/SearchForm";
 import SearchHistory from "../components/SearchHistory";
 
+
 const SearchPage: React.FC = () => {
   const staticData = [
     { card_id: "123", employee_id: "emp001", total_ar: 500, total_ca: 300 },
@@ -103,6 +104,7 @@ const SearchPage: React.FC = () => {
         clearHistory={clearHistory}
         showHistory={showHistory}
       />
+
     </div>
   );
 };
