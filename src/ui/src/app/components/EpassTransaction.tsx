@@ -7,7 +7,7 @@ interface FormData {
   amount: number;
   total_ar: number;
   total_ca: number;
-  transaction_type: number; 
+  transaction_type: string; 
 }
 
 interface EpassTransactionProps {
@@ -26,18 +26,17 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
   onClose,
 }) => {
   const [formData, setFormData] = useState<FormData>({
-    cashier_id: "",
-    employee_id: employeeId, // Pre-fill the employee_id field
-    card_id: initialCardId,   // Pre-fill the card_id field
+    cashier_id: "", 
+    employee_id: employeeId, 
+    card_id: initialCardId,   
     amount: 0,
-    total_ar: totalAr,         // Pre-fill the total_ar field
-    total_ca: totalCa,         // Pre-fill the total_ca field
-    transaction_type: 0,      // Initial value for transaction_type
+    total_ar: totalAr,        
+    total_ca: totalCa,         
+    transaction_type: "",  
   });
 
-  const onAmountChange = (value: number) => {
-    setFormData({ ...formData, amount: value });
-  };
+  const [remainingCa, setRemainingCa] = useState(totalCa);  // Remaining total_ca
+  const [remainingAr, setRemainingAr] = useState(totalAr);  // Remaining total_ar
 
   const cashierOptions = [
     { id: "E12345", name: "Cashier 1" },
@@ -51,19 +50,46 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]:
-        name === "amount" || name === "total_ar" || name === "total_ca" || name === "transaction_type"
-          ? name === "transaction_type"
-            ? value // For transaction_type, directly set value
-            : parseFloat(value) || 0
-          : value,
+      [name]: value,
     });
+
+    if (name === "transaction_type" && formData.amount > 0) {
+      if (value === "CA") {
+        setRemainingCa(totalCa - formData.amount); // Reset CA amount
+        setRemainingAr(totalAr);                    // Reset AR
+      } else if (value === "AR") {
+        setRemainingAr(totalAr - formData.amount); // Reset AR amount
+        setRemainingCa(totalCa);                    // Reset CA
+      }
+    }
+  };
+
+  const handleAmountChange = (value: number) => {
+    setFormData({ ...formData, amount: value });
+
+    if (formData.transaction_type === "CA") {
+      setRemainingCa(totalCa - value);
+    } else if (formData.transaction_type === "AR") {
+      setRemainingAr(totalAr - value);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form Submitted", formData);
-    onClose(); // Close the modal after submitting
+    onClose(); 
+  };
+
+  const isSubmitDisabled = () => {
+    return (
+      !formData.cashier_id || 
+      !formData.transaction_type || 
+      formData.amount <= 0 || 
+      remainingCa < 0 ||      // Check if remainingCa is negative
+      remainingAr < 0 ||      // Check if remainingAr is negative
+      (remainingCa < 0 && formData.transaction_type === "CA") || 
+      (remainingAr < 0 && formData.transaction_type === "AR")
+    );
   };
 
   return (
@@ -87,7 +113,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             onChange={handleChange}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">Select Cashier</option>
+            <option value="" disabled>Select Cashier</option>
             {cashierOptions.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
@@ -106,8 +132,9 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             value={formData.transaction_type}
             onChange={handleChange}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            disabled={!formData.cashier_id} // Disable until Cashier ID is filled
           >
-            <option value="">Select Type</option>
+            <option value="" disabled>Select Transaction Type</option>
             <option value="CA">CA</option>
             <option value="AR">AR</option>
           </select>
@@ -125,12 +152,13 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             onChange={(e) => {
               const value = e.target.value;
               if (value === '' || parseFloat(value) >= 0) {
-                setFormData({ ...formData, amount: value ? parseFloat(value) : 0 });
+                handleAmountChange(value ? parseFloat(value) : 0);
               }
             }}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none"
             style={{ letterSpacing: '1.5px' }}
             autoComplete="off"
+            disabled={!formData.transaction_type} // Disable until Transaction Type is selected
           />
         </div>
 
@@ -155,7 +183,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Total CA
           </label>
-          <span className="text-gray-700">{formData.total_ca}</span>
+          <span className="text-gray-700">{remainingCa.toFixed(2)}</span>
         </div>
 
         {/* Total AR (label-only) */}
@@ -163,14 +191,15 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Total AR
           </label>
-          <span className="text-gray-700">{formData.total_ar}</span>
+          <span className="text-gray-700">{remainingAr.toFixed(2)}</span>
         </div>
 
         {/* Submit and Cancel Buttons */}
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            disabled={isSubmitDisabled()}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
           >
             Submit
           </button>
