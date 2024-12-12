@@ -133,7 +133,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
             onClick={handleOpenFormClick}
             className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            Open Epass Transaction Form
+           Make Transaction
           </button>
 
           {/* Render EpassTransaction modal if open */}

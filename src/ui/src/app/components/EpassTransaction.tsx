@@ -7,6 +7,7 @@ interface FormData {
   amount: number;
   total_ar: number;
   total_ca: number;
+  transaction_type: number; 
 }
 
 interface EpassTransactionProps {
@@ -31,7 +32,12 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
     amount: 0,
     total_ar: totalAr,         // Pre-fill the total_ar field
     total_ca: totalCa,         // Pre-fill the total_ca field
+    transaction_type: 0,      // Initial value for transaction_type
   });
+
+  const onAmountChange = (value: number) => {
+    setFormData({ ...formData, amount: value });
+  };
 
   const cashierOptions = [
     { id: "E12345", name: "Cashier 1" },
@@ -46,8 +52,10 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
     setFormData({
       ...formData,
       [name]:
-        name === "amount" || name === "total_ar" || name === "total_ca"
-          ? parseFloat(value) || 0
+        name === "amount" || name === "total_ar" || name === "total_ca" || name === "transaction_type"
+          ? name === "transaction_type"
+            ? value // For transaction_type, directly set value
+            : parseFloat(value) || 0
           : value,
     });
   };
@@ -88,78 +96,74 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           </select>
         </div>
 
-        {/* Employee ID (non-editable) */}
+        {/* Transaction Type */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Employee ID
+            Transaction Type
           </label>
-          <input
-            type="text"
-            name="employee_id"
-            value={formData.employee_id}
+          <select
+            name="transaction_type"
+            value={formData.transaction_type}
             onChange={handleChange}
-            readOnly
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        {/* Card ID (non-editable) */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Card ID
-          </label>
-          <input
-            type="text"
-            name="card_id"
-            value={formData.card_id}
-            onChange={handleChange}
-            readOnly
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        {/* Total CA (non-editable) */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Total CA
-          </label>
-          <input
-            type="number"
-            name="total_ca"
-            value={formData.total_ca}
-            onChange={handleChange}
-            readOnly
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        {/* Total AR (non-editable) */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Total AR
-          </label>
-          <input
-            type="number"
-            name="total_ar"
-            value={formData.total_ar}
-            onChange={handleChange}
-            readOnly
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
+          >
+            <option value="">Select Type</option>
+            <option value="CA">CA</option>
+            <option value="AR">AR</option>
+          </select>
         </div>
 
         {/* Amount */}
-        <div className="mb-4">
+        <div className="mb-4 group">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Amount
           </label>
           <input
             type="number"
             name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={formData.amount || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '' || parseFloat(value) >= 0) {
+                setFormData({ ...formData, amount: value ? parseFloat(value) : 0 });
+              }
+            }}
+            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none"
+            style={{ letterSpacing: '1.5px' }}
+            autoComplete="off"
           />
+        </div>
+
+        {/* Employee ID (label-only) */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Employee ID
+          </label>
+          <span className="text-gray-700">{formData.employee_id}</span>
+        </div>
+
+        {/* Card ID (label-only) */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Card ID
+          </label>
+          <span className="text-gray-700">{formData.card_id}</span>
+        </div>
+
+        {/* Total CA (label-only) */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Total CA
+          </label>
+          <span className="text-gray-700">{formData.total_ca}</span>
+        </div>
+
+        {/* Total AR (label-only) */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Total AR
+          </label>
+          <span className="text-gray-700">{formData.total_ar}</span>
         </div>
 
         {/* Submit and Cancel Buttons */}
