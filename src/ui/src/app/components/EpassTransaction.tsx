@@ -35,8 +35,8 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
     transaction_type: "",  
   });
 
-  const [remainingCa, setRemainingCa] = useState(totalCa);  // Remaining total_ca
-  const [remainingAr, setRemainingAr] = useState(totalAr);  // Remaining total_ar
+  const [remainingCa, setRemainingCa] = useState(totalCa);  
+  const [remainingAr, setRemainingAr] = useState(totalAr); 
 
   const cashierOptions = [
     { id: "E12345", name: "Cashier 1" },
@@ -55,11 +55,11 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
     if (name === "transaction_type" && formData.amount > 0) {
       if (value === "CA") {
-        setRemainingCa(totalCa - formData.amount); // Reset CA amount
-        setRemainingAr(totalAr);                    // Reset AR
+        setRemainingCa(totalCa - formData.amount); 
+        setRemainingAr(totalAr);                   
       } else if (value === "AR") {
-        setRemainingAr(totalAr - formData.amount); // Reset AR amount
-        setRemainingCa(totalCa);                    // Reset CA
+        setRemainingAr(totalAr - formData.amount); 
+        setRemainingCa(totalCa);                   
       }
     }
   };
@@ -85,8 +85,8 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
       !formData.cashier_id || 
       !formData.transaction_type || 
       formData.amount <= 0 || 
-      remainingCa < 0 ||      // Check if remainingCa is negative
-      remainingAr < 0 ||      // Check if remainingAr is negative
+      remainingCa < 0 ||     
+      remainingAr < 0 ||      
       (remainingCa < 0 && formData.transaction_type === "CA") || 
       (remainingAr < 0 && formData.transaction_type === "AR")
     );
@@ -132,7 +132,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             value={formData.transaction_type}
             onChange={handleChange}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            disabled={!formData.cashier_id} // Disable until Cashier ID is filled
+            disabled={!formData.cashier_id} 
           >
             <option value="" disabled>Select Transaction Type</option>
             <option value="CA">CA</option>
@@ -158,7 +158,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none"
             style={{ letterSpacing: '1.5px' }}
             autoComplete="off"
-            disabled={!formData.transaction_type} // Disable until Transaction Type is selected
+            disabled={!formData.transaction_type} 
           />
         </div>
 
