@@ -89,20 +89,20 @@ const SearchForm: React.FC<SearchFormProps> = ({
     >
       {/* Input Field */}
       <div className="flex items-center space-x-4">
-        <input
-          ref={cardIdRef}
-          type="text"
-          placeholder="Enter card ID"
-          value={cardId}
-          onChange={handleInputChange}
-          onKeyUp={handleKeyUp}
-          className="px-4 py-2 border border-gray-300 rounded-md"
-          autoComplete="off"
-          onKeyDown={handleKeyPress}
-        />
+      <input
+        ref={cardIdRef}
+        type="text"
+        placeholder="Enter card ID"
+        value={cardId}
+        onChange={handleInputChange}
+        onKeyUp={handleKeyUp}
+        onKeyDown={handleKeyPress}
+        className="px-2.5 py-2 border border-gray-300 rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-deepBlue tracking-[1.8px] font-semibold "
+        autoComplete="off"
+      />
         <button
           onClick={handleSearchClick}
-          className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          className="px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
         >
           Search
         </button>
@@ -114,7 +114,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
       {/* Result Section */}
       {searched && cardId.trim() && result && (
         <div className="p-4 bg-white border rounded-md shadow-md w-96">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-start">
             <h2 className="text-xl font-semibold mb-4">Card Details</h2>
             <button
               onClick={handleCloseResultCard}
@@ -131,7 +131,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
           {/* Button to trigger EpassTransaction modal */}
           <button
             onClick={handleOpenFormClick}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="mt-4 px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
           >
            Make Transaction
           </button>

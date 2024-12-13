@@ -20,7 +20,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({ history, onHistoryItemCli
           {history.map((item, index) => (
             <div
               key={index}
-              className="p-2 bg-gray-200 rounded-md cursor-pointer hover:bg-gray-300"
+              className="p-2 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100"
               onClick={() => onHistoryItemClick(item)}
             >
               <p className="font-semibold">{item.card_id}</p>

@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useSession } from "next-auth/react";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import LoginButton from "././LoginButton";
+import LogoutButton from "././LogoutButton";
 
 const AuthButtons: React.FC = () => {
   const { data: session, status } = useSession();

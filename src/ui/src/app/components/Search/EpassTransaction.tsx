@@ -199,7 +199,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           <button
             type="submit"
             disabled={isSubmitDisabled()}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+            className="px-4 py-2 bg-deepBlue text-white rounded disabled:opacity-50"
           >
             Submit
           </button>

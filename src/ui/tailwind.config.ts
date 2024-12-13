@@ -11,6 +11,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        deepBlue: {
+          DEFAULT: "#0000ff", 
+          light: "#003366",  
+          dark: "#000d1a",  
+        },
       },
     },
   },
