@@ -1,9 +1,9 @@
-"use client";  // Mark as a client component
+"use client"; // Mark as a client component
 
 import React, { useState, useEffect } from "react";
 import SearchForm from "../components/Search/SearchForm";
 import SearchHistory from "../components/Search/SearchHistory";
-
+import SettingsText from "../components/Settings/Settings";
 
 const SearchPage: React.FC = () => {
   const staticData = [
@@ -19,7 +19,6 @@ const SearchPage: React.FC = () => {
   const [showHistory, setShowHistory] = useState<boolean>(false);
   const [cardId, setCardId] = useState<string>("");
 
- 
   useEffect(() => {
     const savedHistory = localStorage.getItem("searchHistory");
     if (savedHistory) {
@@ -36,7 +35,7 @@ const SearchPage: React.FC = () => {
       return;
     }
 
-    setError(""); 
+    setError("");
 
     const foundData = staticData.find(
       (data) => data.card_id.toLowerCase() === trimmedCardId.toLowerCase()
@@ -79,16 +78,19 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-          <div
-          className="relative flex flex-col items-center justify-center min-h-screen"
-          style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,139,0.2), rgba(0,0,139,0.5)), url('/Pharmacist.jpg')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-      {/* <h1 className="text-3xl font-bold mb-6">Search for a Card</h1> */}
+    <div
+      className="relative flex flex-col items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,139,0.2), rgba(0,0,139,0.5)), url('/Pharmacist.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* Settings Component */}
+      <div className="absolute top-9 right-1 text-white ">
+        <SettingsText />
+      </div>
 
       <SearchForm
         onSearch={handleSearch}
@@ -100,7 +102,7 @@ const SearchPage: React.FC = () => {
 
       <button
         onClick={toggleHistoryVisibility}
-        className="mt-4 px-4 py-2 text-white rounded-md  fixed"
+        className="mt-4 px-4 py-2 text-white rounded-md fixed"
         style={{ top: '-.5em', right: '.51em' }}
       >
         {showHistory ? "Hide History" : "Show History"}
@@ -112,7 +114,6 @@ const SearchPage: React.FC = () => {
         clearHistory={clearHistory}
         showHistory={showHistory}
       />
-
     </div>
   );
 };
