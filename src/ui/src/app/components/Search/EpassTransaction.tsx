@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface FormData {
   cashier_id: string;
@@ -7,7 +7,7 @@ interface FormData {
   amount: number;
   total_ar: number;
   total_ca: number;
-  transaction_type: string; 
+  transaction_type: string;
 }
 
 interface EpassTransactionProps {
@@ -26,23 +26,28 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
   onClose,
 }) => {
   const [formData, setFormData] = useState<FormData>({
-    cashier_id: "", 
-    employee_id: employeeId, 
-    card_id: initialCardId,   
+    cashier_id: "", // Will be updated from local storage
+    employee_id: employeeId,
+    card_id: initialCardId,
     amount: 0,
-    total_ar: totalAr,        
-    total_ca: totalCa,         
-    transaction_type: "",  
+    total_ar: totalAr,
+    total_ca: totalCa,
+    transaction_type: "",
   });
 
-  const [remainingCa, setRemainingCa] = useState(totalCa);  
-  const [remainingAr, setRemainingAr] = useState(totalAr); 
+  const [remainingCa, setRemainingCa] = useState(totalCa);
+  const [remainingAr, setRemainingAr] = useState(totalAr);
 
-  const cashierOptions = [
-    { id: "E12345", name: "Cashier 1" },
-    { id: "E67890", name: "Cashier 2" },
-    { id: "E54321", name: "Cashier 3" },
-  ];
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("settings");
+    if (storedSettings) {
+      const settings = JSON.parse(storedSettings);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        cashier_id: settings.employee_id, // Set cashier_id from local storage
+      }));
+    }
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -55,11 +60,11 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
     if (name === "transaction_type" && formData.amount > 0) {
       if (value === "CA") {
-        setRemainingCa(totalCa - formData.amount); 
-        setRemainingAr(totalAr);                   
+        setRemainingCa(totalCa - formData.amount);
+        setRemainingAr(totalAr);
       } else if (value === "AR") {
-        setRemainingAr(totalAr - formData.amount); 
-        setRemainingCa(totalCa);                   
+        setRemainingAr(totalAr - formData.amount);
+        setRemainingCa(totalCa);
       }
     }
   };
@@ -77,24 +82,24 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form Submitted", formData);
-    onClose(); 
+    onClose();
   };
 
   const isSubmitDisabled = () => {
     return (
-      !formData.cashier_id || 
-      !formData.transaction_type || 
-      formData.amount <= 0 || 
-      remainingCa < 0 ||     
-      remainingAr < 0 ||      
-      (remainingCa < 0 && formData.transaction_type === "CA") || 
+      !formData.cashier_id ||
+      !formData.transaction_type ||
+      formData.amount <= 0 ||
+      remainingCa < 0 ||
+      remainingAr < 0 ||
+      (remainingCa < 0 && formData.transaction_type === "CA") ||
       (remainingAr < 0 && formData.transaction_type === "AR")
     );
   };
 
   return (
     <div
-      className="absolute top-0 left-0 z-50 w-full max-w-lg bg-white p-6 rounded shadow-lg overflow-auto fixed" 
+      className="absolute top-0 left-0 z-50 w-full max-w-lg bg-white p-6 rounded shadow-lg overflow-auto fixed"
       style={{
         maxHeight: "90vh",
         top: "-12em",
@@ -107,19 +112,13 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Cashier ID
           </label>
-          <select
+          <input
+            type="text"
             name="cashier_id"
             value={formData.cashier_id}
-            onChange={handleChange}
+            readOnly
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="" disabled>Select Cashier</option>
-            {cashierOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Transaction Type */}
@@ -132,9 +131,11 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             value={formData.transaction_type}
             onChange={handleChange}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            disabled={!formData.cashier_id} 
+            disabled={!formData.cashier_id}
           >
-            <option value="" disabled>Select Transaction Type</option>
+            <option value="" disabled>
+              Select Transaction Type
+            </option>
             <option value="CA">CA</option>
             <option value="AR">AR</option>
           </select>
@@ -148,17 +149,17 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           <input
             type="number"
             name="amount"
-            value={formData.amount || ''}
+            value={formData.amount || ""}
             onChange={(e) => {
               const value = e.target.value;
-              if (value === '' || parseFloat(value) >= 0) {
+              if (value === "" || parseFloat(value) >= 0) {
                 handleAmountChange(value ? parseFloat(value) : 0);
               }
             }}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none"
-            style={{ letterSpacing: '1.5px' }}
+            style={{ letterSpacing: "1.5px" }}
             autoComplete="off"
-            disabled={!formData.transaction_type} 
+            disabled={!formData.transaction_type}
           />
         </div>
 
