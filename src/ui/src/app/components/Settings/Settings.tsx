@@ -79,14 +79,14 @@ const SettingsText: React.FC = () => {
       const employeeIndex = storeData[storeCode].employees.indexOf(selectedEmployeeId);
       if (employeeIndex !== -1) {
         setEmployeeId(selectedEmployeeId);
-        setUserName(storeData[storeCode].users[employeeIndex]); // Auto-select corresponding User Name
+        setUserName(storeData[storeCode].users[employeeIndex]);
       }
     }
   };
 
   return (
     <div>
-      <button onClick={openModal} className="px-4 py-2 text-white bg-blue-500 rounded">
+      <button onClick={openModal} className="px-4 py-2 text-white fixed" style={{ top: '5px',right:"0" }}>
         Settings
       </button>
 
@@ -118,8 +118,8 @@ const SettingsText: React.FC = () => {
                     setIsStoreCodeSaved(false);
                   }}
                   placeholder="Search store code..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2" 
+                  />
                 <datalist id="storeOptions">
                   {Object.keys(storeData).map((store) => (
                     <option key={store} value={store} />
@@ -127,9 +127,9 @@ const SettingsText: React.FC = () => {
                 </datalist>
                 <button
                   onClick={handleSaveStoreCode}
-                  className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  className="ml-2 px-4 py-2 bg-deepBlue  text-white rounded-lg hover:bg-blue-600"
                 >
-                  Save Store Code
+                  Save Code
                 </button>
                 <button
                   onClick={handleReset}
@@ -196,7 +196,7 @@ const SettingsText: React.FC = () => {
                 onClick={handleSaveAll}
                 disabled={!isStoreCodeSaved}
                 className={`px-4 py-2 ${
-                  isStoreCodeSaved ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-700'
+                  isStoreCodeSaved ? 'bg-deepBlue  text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-700'
                 } rounded-lg`}
               >
                 Save All

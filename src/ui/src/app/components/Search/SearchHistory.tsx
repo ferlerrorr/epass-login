@@ -11,6 +11,7 @@ interface SearchHistoryProps {
   showHistory: boolean;
 }
 
+
 const SearchHistory: React.FC<SearchHistoryProps> = ({ history, onHistoryItemClick, clearHistory, showHistory }) => {
   return (
     showHistory && history.length > 0 && (

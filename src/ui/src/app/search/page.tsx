@@ -1,8 +1,7 @@
-"use client"; // Mark as a client component
+"use client"; 
 
 import React, { useState, useEffect } from "react";
 import SearchForm from "../components/Search/SearchForm";
-import SearchHistory from "../components/Search/SearchHistory";
 import SettingsText from "../components/Settings/Settings";
 
 const SearchPage: React.FC = () => {
@@ -48,34 +47,39 @@ const SearchPage: React.FC = () => {
       };
 
       setResult(foundData);
-      setHistory((prevHistory) => {
-        const newHistory = [...prevHistory, historyEntry];
-        localStorage.setItem("searchHistory", JSON.stringify(newHistory));
-        return newHistory;
-      });
+
+      //!todo For refactor
+      // setHistory((prevHistory) => {
+      //   const newHistory = [...prevHistory, historyEntry];
+      //   localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+      //   return newHistory;
+      // });
     } else {
       setResult(null);
     }
   };
 
-  const handleHistoryItemClick = (historyItem: any) => {
-    setCardId(historyItem.card_id); // Update the cardId state to reflect the clicked history card_id
-    setResult({
-      card_id: historyItem.card_id,
-      employee_id: historyItem.employee_id,
-      total_ar: historyItem.total_ar,
-      total_ca: historyItem.total_ca,
-    });
-  };
+  //!todo For refactor
+  // const handleHistoryItemClick = (historyItem: any) => {
+  //   setCardId(historyItem.card_id); 
+  //   setResult({
+  //     card_id: historyItem.card_id,
+  //     employee_id: historyItem.employee_id,
+  //     total_ar: historyItem.total_ar,
+  //     total_ca: historyItem.total_ca,
+  //   });
+  // };
 
-  const toggleHistoryVisibility = () => {
-    setShowHistory(!showHistory);
-  };
+  //!todo For refactor
+  // const toggleHistoryVisibility = () => {
+  //   setShowHistory(!showHistory);
+  // };
 
-  const clearHistory = () => {
-    setHistory([]);
-    localStorage.removeItem("searchHistory");
-  };
+  //!todo For refactor
+  // const clearHistory = () => {
+  //   setHistory([]);
+  //   localStorage.removeItem("searchHistory");
+  // };
 
   return (
     <div
@@ -100,20 +104,7 @@ const SearchPage: React.FC = () => {
         setCardId={setCardId} // Pass setCardId to SearchForm
       />
 
-      <button
-        onClick={toggleHistoryVisibility}
-        className="mt-4 px-4 py-2 text-white rounded-md fixed"
-        style={{ top: '-.5em', right: '.51em' }}
-      >
-        {showHistory ? "Hide History" : "Show History"}
-      </button>
 
-      <SearchHistory
-        history={history}
-        onHistoryItemClick={handleHistoryItemClick}
-        clearHistory={clearHistory}
-        showHistory={showHistory}
-      />
     </div>
   );
 };

@@ -16,9 +16,9 @@ const SearchForm: React.FC<SearchFormProps> = ({
   cardId,
   setCardId,
 }) => {
-  const [searched, setSearched] = useState(false);
+  const [searched, setSearched] = useState(false); // Controls Result modal
   const [inputError, setInputError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controls Transaction modal
   const cardIdRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
   const triggerSearch = () => {
     onSearch(cardId.trim());
     setSearched(true);
+    setIsModalOpen(false);
   };
 
   const shouldShowError = searched && !result && cardId.trim() && !error;
@@ -70,16 +71,18 @@ const SearchForm: React.FC<SearchFormProps> = ({
   };
 
   const handleOpenFormClick = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(true); 
+    setSearched(false); 
+   
   };
 
   const handleCloseForm = () => {
-    setIsModalOpen(false); // Close the EpassTransaction form
+    setIsModalOpen(false); // Close Transaction modal
   };
 
   const handleCloseResultCard = () => {
-    setSearched(false); // Close the result card
-    setCardId(""); // Reset cardId
+    setSearched(false); 
+    setCardId("");
   };
 
   return (
@@ -89,17 +92,17 @@ const SearchForm: React.FC<SearchFormProps> = ({
     >
       {/* Input Field */}
       <div className="flex items-center space-x-4">
-      <input
-        ref={cardIdRef}
-        type="text"
-        placeholder="Enter card ID"
-        value={cardId}
-        onChange={handleInputChange}
-        onKeyUp={handleKeyUp}
-        onKeyDown={handleKeyPress}
-        className="px-2.5 py-2 border border-gray-300 rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-deepBlue tracking-[1.8px] font-semibold "
-        autoComplete="off"
-      />
+        <input
+          ref={cardIdRef}
+          type="text"
+          placeholder="Enter card ID"
+          value={cardId}
+          onChange={handleInputChange}
+          onKeyUp={handleKeyUp}
+          onKeyDown={handleKeyPress}
+          className="px-2.5 py-2 border border-gray-300 rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-deepBlue tracking-[1.8px] font-semibold "
+          autoComplete="off"
+        />
         <button
           onClick={handleSearchClick}
           className="px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
@@ -109,13 +112,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
       </div>
 
       {/* Input Error Message */}
-      {inputError && <p className="text-red-500">{inputError}</p>}
+      {inputError && <p className="text-error">{inputError}</p>}
 
       {/* Result Section */}
       {searched && cardId.trim() && result && (
-        <div className="p-4 bg-white border rounded-md shadow-md w-96">
+        <div
+          className="p-6 pl-7 pt-7 bg-white border rounded-md shadow-md w-96"
+          style={{ letterSpacing: "2.5px" }}
+        >
           <div className="flex justify-between items-start">
-            <h2 className="text-xl font-semibold mb-4">Card Details</h2>
+            <h2 className="text-xl text-headings font-semibold mb-8">Card Details</h2>
             <button
               onClick={handleCloseResultCard}
               className="text-gray-500 hover:text-gray-700"
@@ -123,41 +129,73 @@ const SearchForm: React.FC<SearchFormProps> = ({
               Close
             </button>
           </div>
-          <p><strong>Card ID:</strong> {result.card_id}</p>
-          <p><strong>Employee ID:</strong> {result.employee_id}</p>
-          <p><strong>Total AR:</strong> {result.total_ar}</p>
-          <p><strong>Total CA:</strong> {result.total_ca}</p>
 
-          {/* Button to trigger EpassTransaction modal */}
-          <button
-            onClick={handleOpenFormClick}
-            className="mt-4 px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
-          >
-           Make Transaction
-          </button>
+          
+          <div className="grid grid-cols-2 gap-20 mb-0">
+          {/* Left Grid */}
+          <div className=" flex flex-col gap-8">
+            <p className="flex flex-col gap-3">
+              <strong className="text-gray-700">
+                Card ID
+              </strong>
+              <strong >{result.card_id}</strong>
+            </p>
+            <p className="flex flex-col gap-3">
+              <strong  className="text-gray-700">
+                Employee ID
+              </strong>
+              <strong >{result.employee_id}</strong>
+            </p>
+          </div>
 
-          {/* Render EpassTransaction modal if open */}
-          {isModalOpen && (
-            <EpassTransaction 
-              initialCardId={result.card_id} 
-              employeeId={result.employee_id} 
-              totalAr={result.total_ar} 
-              totalCa={result.total_ca} 
-              onClose={handleCloseForm} 
-            />
-          )}
+          {/* Right Grid */}
+          <div className=" flex flex-col gap-8">
+          <p className="flex flex-col gap-3">
+              <strong className="text-gray-700">
+                Total AR
+              </strong>
+              <strong className="font-extrabold text-focusvalue">{result.total_ar}</strong>
+            </p>
+            <p className="flex flex-col gap-3">
+              <strong  className="text-gray-700">
+                Total CA
+              </strong>
+              <strong className="font-extrabold text-focusvalue">{result.total_ca}</strong>
+            </p>
+          </div>
         </div>
+
+
+          <div className="flex justify-end">
+            {/* Button to trigger EpassTransaction modal */}
+            <button
+              onClick={handleOpenFormClick}
+              className="mt-9 px-4 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
+            >
+              Make Transaction
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Render EpassTransaction modal */}
+      {isModalOpen && (
+        <EpassTransaction
+          initialCardId={result?.card_id || ""}
+          employeeId={result?.employee_id || ""}
+          totalAr={result?.total_ar || ""}
+          totalCa={result?.total_ca || ""}
+          onClose={handleCloseForm} // Close only Transaction modal
+        />
       )}
 
       {/* No Data Found Error */}
       {shouldShowError && (
-        <p className="text-red-500">
-          No data found for the entered Card ID.
-        </p>
+        <p className="text-error">No data found for the entered Card ID.</p>
       )}
 
       {/* General Error Message */}
-      {searched && error && <p className="text-red-500">{error}</p>}
+      {searched && error && <p className="text-error">{error}</p>}
     </div>
   );
 };
