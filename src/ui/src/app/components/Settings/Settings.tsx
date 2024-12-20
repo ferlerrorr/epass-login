@@ -86,10 +86,9 @@ const SettingsText: React.FC = () => {
 
   return (
     <div>
-      <button onClick={openModal} className="px-4 py-2 text-white fixed" style={{ top: '5px',right:"0" }}>
+      <button onClick={openModal} className="px-4 py-2 text-transwhite hover:text-gray-700 fixed font-semibold tracking-[1.2px] text-lg " style={{ top: '5px',right:"0" }}>
         Settings
       </button>
-
       {modalIsOpen && (
         <div
           role="dialog"

@@ -114,16 +114,16 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
         className={`modal z-50 w-96 max-w-96 bg-white p-7 rounded shadow-lg overflow-auto px-9 fixed ${
           isModalOpen ? "translate-y-0" : "-translate-y-full"
         } transition-transform duration-300`}
-        style={{ maxHeight: "90vh", width:"50vw",  top: "25.5em", letterSpacing: "2.5px" }}
+        style={{ maxHeight: "90vh", width:"50vw",  top: "23em", letterSpacing: "2.5px" }}
       >
-        <h2 className="text-lg text-headings font-semibold mb-7">Transaction Form</h2>
+        <h2 className="text-lg text-headings font-bold mb-7">Transaction Form</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-7 mb-10">
             {/* Left Grid */}
             <div className="grid grid-rows-2 gap-7">
               {/* Cashier ID */}
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+                <label className="block text-sm font-medium text-title mb-1 font-semibold">
                   Cashier ID
                 </label>
                 <span className="block w-full font-semibold text-gray-800  py-2">
@@ -133,7 +133,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
               {/* Employee ID (label-only) */}
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+                <label className="block text-sm font-medium text-title mb-1 font-semibold">
                   Employee ID
                 </label>
                 <span className="font-semibold text-gray-800">{formData.employee_id}</span>
@@ -141,7 +141,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
               {/* Card ID (label-only) */}
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+                <label className="block text-sm font-medium text-title mb-1 font-semibold">
                   Card ID
                 </label>
                 <span className="font-semibold text-gray-800">{formData.card_id}</span>
@@ -152,7 +152,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             <div className="grid grid-rows-3 gap-11">
               {/* Total CA (label-only) */}
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+                <label className="block text-sm font-medium text-title mb-1 font-semibold">
                   Total CA
                 </label>
                 <span className="font-extrabold text-focusvalue">{remainingCa.toFixed(2)}</span>
@@ -160,7 +160,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
               {/* Total AR (label-only) */}
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+                <label className="block text-sm font-medium text-title mb-1 font-semibold">
                   Total AR
                 </label>
                 <span className="font-extrabold text-focusvalue">{remainingAr.toFixed(2)}</span>
@@ -170,7 +170,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
           {/* Transaction Type */}
           <div className="mb-9">
-            <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+            <label className="block text-sm font-medium text-title mb-1 font-semibold">
               Transaction Type
             </label>
             <select
@@ -190,7 +190,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
           {/* Amount */}
           <div className="mb-12 group">
-            <label className="block text-sm font-medium text-gray-500 mb-1 font-semibold">
+            <label className="block text-sm font-medium text-title mb-1 font-semibold">
               Amount
             </label>
             <input
@@ -215,14 +215,14 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
             <button
               type="submit"
               disabled={isSubmitDisabled()}
-              className="px-4 py-2 bg-deepBlue text-white rounded disabled:opacity-50"
+              className="px-4 py-2 bg-deepBlue text-white rounded disabled:opacity-50 font-semibold hover:bg-blue-600"
             >
               Submit
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="ml-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="ml-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 font-semibold hover:bg-blue-600"
             >
               Cancel
             </button>

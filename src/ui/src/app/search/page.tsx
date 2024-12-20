@@ -14,16 +14,16 @@ const SearchPage: React.FC = () => {
 
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
-  const [history, setHistory] = useState<any[]>([]);
-  const [showHistory, setShowHistory] = useState<boolean>(false);
+  // const [history, setHistory] = useState<any[]>([]);
+  // const [showHistory, setShowHistory] = useState<boolean>(false);
   const [cardId, setCardId] = useState<string>("");
 
-  useEffect(() => {
-    const savedHistory = localStorage.getItem("searchHistory");
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedHistory = localStorage.getItem("searchHistory");
+  //   if (savedHistory) {
+  //     setHistory(JSON.parse(savedHistory));
+  //   }
+  // }, []);
 
   const handleSearch = (cardId: string) => {
     const trimmedCardId = cardId.trim();
@@ -85,7 +85,7 @@ const SearchPage: React.FC = () => {
     <div
       className="relative flex flex-col items-center justify-center min-h-screen"
       style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(0,0,139,0.2), rgba(0,0,139,0.5)), url('/Pharmacist.jpg')`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 140, 255, 0.2), rgba(0, 94, 171, 0.8)), url('/Pharmacist.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -94,6 +94,12 @@ const SearchPage: React.FC = () => {
       {/* Settings Component */}
       <div className="absolute top-9 right-1 text-white ">
         <SettingsText />
+      </div>
+
+
+      {/* Logo */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-64" style={{top:"23.8em"}}>
+        <img src={"/South_Star_Drug_logo.svg"} alt="Logo" />
       </div>
 
       <SearchForm

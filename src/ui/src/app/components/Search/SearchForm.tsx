@@ -105,7 +105,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
         />
         <button
           onClick={handleSearchClick}
-          className="px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
+          className="px-6 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600 font-semibold tracking-[1.8px]"
         >
           Search
         </button>
@@ -121,10 +121,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
           style={{ letterSpacing: "2.5px" }}
         >
           <div className="flex justify-between items-start">
-            <h2 className="text-xl text-headings font-semibold mb-8">Card Details</h2>
+            <h2 className="text-xl text-headings font-bold mb-6">Card Details</h2>
             <button
               onClick={handleCloseResultCard}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-400 hover:text-gray-700 font-bold text-sm"
             >
               Close
             </button>
@@ -133,15 +133,15 @@ const SearchForm: React.FC<SearchFormProps> = ({
           
           <div className="grid grid-cols-2 gap-20 mb-0">
           {/* Left Grid */}
-          <div className=" flex flex-col gap-8">
-            <p className="flex flex-col gap-3">
-              <strong className="text-gray-700">
+          <div className=" flex flex-col gap-7">
+            <p className="flex flex-col gap-2">
+              <strong className="text-title">
                 Card ID
               </strong>
               <strong >{result.card_id}</strong>
             </p>
-            <p className="flex flex-col gap-3">
-              <strong  className="text-gray-700">
+            <p className="flex flex-col gap-2">
+              <strong  className="text-title">
                 Employee ID
               </strong>
               <strong >{result.employee_id}</strong>
@@ -149,15 +149,15 @@ const SearchForm: React.FC<SearchFormProps> = ({
           </div>
 
           {/* Right Grid */}
-          <div className=" flex flex-col gap-8">
-          <p className="flex flex-col gap-3">
-              <strong className="text-gray-700">
+          <div className=" flex flex-col gap-7">
+          <p className="flex flex-col gap-2">
+              <strong className="text-title">
                 Total AR
               </strong>
               <strong className="font-extrabold text-focusvalue">{result.total_ar}</strong>
             </p>
-            <p className="flex flex-col gap-3">
-              <strong  className="text-gray-700">
+            <p className="flex flex-col gap-2">
+              <strong  className="text-title">
                 Total CA
               </strong>
               <strong className="font-extrabold text-focusvalue">{result.total_ca}</strong>
@@ -170,7 +170,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
             {/* Button to trigger EpassTransaction modal */}
             <button
               onClick={handleOpenFormClick}
-              className="mt-9 px-4 py-2 bg-deepBlue text-white rounded-md hover:bg-blue-600"
+              className="mt-7 px-4 py-2 bg-deepBlue font-semibold text-white rounded-md hover:bg-blue-600"
             >
               Make Transaction
             </button>
