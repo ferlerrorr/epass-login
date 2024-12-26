@@ -8,7 +8,7 @@ interface FormData {
   total_ar: number;
   total_ca: number;
   transaction_type: string;
-  transaction_id: string; // New input field for transaction ID
+  transaction_id: string; 
 }
 
 interface EpassTransactionProps {
@@ -27,14 +27,14 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
   onClose,
 }) => {
   const [formData, setFormData] = useState<FormData>({
-    cashier_id: "", // Will be updated from local storage
+    cashier_id: "", 
     employee_id: employeeId,
     card_id: initialCardId,
     amount: 0,
     total_ar: totalAr,
     total_ca: totalCa,
     transaction_type: "",
-    transaction_id: "", // Initialize transaction ID
+    transaction_id: "", 
   });
 
   const [remainingCa, setRemainingCa] = useState(totalCa);
@@ -47,7 +47,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
       const settings = JSON.parse(storedSettings);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        cashier_id: settings.employee_id, // Set cashier_id from local storage
+        cashier_id: settings.employee_id, 
       }));
     }
   }, []);
@@ -55,9 +55,9 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
   useEffect(() => {
     if (isModalOpen) {
       const timer = setTimeout(() => {
-        setIsModalOpen(true); // Ensure the modal transition occurs
-      }, 200); // 0.2 seconds delay
-      return () => clearTimeout(timer); // Cleanup timer
+        setIsModalOpen(true); 
+      }, 200); //
+      return () => clearTimeout(timer); 
     }
   }, [isModalOpen]);
 
@@ -93,26 +93,48 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
 
   const handleAmountChange = (value: number) => {
     setFormData({ ...formData, amount: value });
-
+  
     const transactionType = formData.transaction_type;
     if (transactionType === "CA") {
       setRemainingCa(totalCa - value);
       setRemainingAr(totalAr);
+      setFormData((prev) => ({
+        ...prev,
+        total_ca: totalCa - value
+      }));
+  
     } else if (transactionType === "AR") {
       setRemainingAr(totalAr - value);
       setRemainingCa(totalCa);
+      setFormData((prev) => ({
+        ...prev,
+        total_ar: totalAr - value
+      }));
+  
     } else if (transactionType === "CA + AR") {
       const remainingCaAfterCa = totalCa - value;
       if (remainingCaAfterCa >= 0) {
         setRemainingCa(remainingCaAfterCa);
         setRemainingAr(totalAr);
+        setFormData((prev) => ({
+          ...prev,
+          total_ca: remainingCaAfterCa,
+          total_ar: totalAr
+        }));
+  
       } else {
         setRemainingCa(0);
-        setRemainingAr(totalAr + remainingCaAfterCa); // Deduct the negative amount from AR
+        setRemainingAr(totalAr + remainingCaAfterCa);
+
+        setFormData((prev) => ({
+          ...prev,
+          total_ca: 0,
+          total_ar: totalAr + remainingCaAfterCa
+        }));
       }
     }
   };
-
+  
   const isSubmitDisabled = () => {
     if (formData.transaction_type === "CA + AR") {
       const totalAvailable = totalCa + totalAr;
@@ -150,7 +172,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
           className={`modal z-50 w-96 max-w-96 bg-white p-7 rounded shadow-lg overflow-auto px-9 fixed ${
             isModalOpen ? "translate-y-0" : "-translate-y-full"
           } transition-transform duration-300`}
-          style={{ maxHeight: "90vh", width: "50vw", top: "23em", letterSpacing: "2.5px" }}
+          style={{ maxHeight: "90vh", width: "50vw", top: "24em", letterSpacing: "2.5px" }}
         >
           <h2 className="text-lg text-headings font-bold mb-7">Transaction Form</h2>
           <form onSubmit={handleSubmit}>
@@ -182,8 +204,6 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
                   </label>
                   <span className="font-semibold text-gray-800">{formData.card_id}</span>
                 </div>
-
-         
               </div>
 
               {/* Right Grid */}
@@ -218,25 +238,22 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
               </div>
             </div>
 
-
-
-
-            {/* Transaction ID */}
-            <div className="mb-9">
-              <label className="block text-sm font-medium text-title mb-1 font-semibold">
-                Transaction ID
-              </label>
-              <input
-                type="text"
-                name="transaction_id"
-                value={formData.transaction_id}
-                onChange={(e) =>
-                  setFormData({ ...formData, transaction_id: e.target.value })
-                }
-                className="pl-2 block w-full h-8 border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 font-bold text-focusvalue"
-              />
-            </div>
-
+         {/* Transaction ID */}
+          <div className="mb-9">
+            <label className="block text-sm font-medium text-title mb-1 font-semibold">
+              Transaction ID
+            </label>
+            <input
+              type="text"
+              name="transaction_id"
+              value={formData.transaction_id}
+              onChange={(e) =>
+                setFormData({ ...formData, transaction_id: e.target.value })
+              }
+              className="pl-2 block w-full h-8 border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 font-bold text-focusvalue"
+              autoComplete="off" 
+            />
+          </div>
 
             {/* Transaction Type */}
             <div className="mb-9">
@@ -248,7 +265,7 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
                 value={formData.transaction_type}
                 onChange={handleChange}
                 className="pl-2 block w-full h-8 border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 font-bold text-focusvalue"
-                disabled={!formData.cashier_id}
+                disabled={!formData.transaction_id} 
               >
                 <option value="" disabled>
                   Select Transaction Type
@@ -277,19 +294,21 @@ const EpassTransaction: React.FC<EpassTransactionProps> = ({
                 className="pl-2 block w-full h-8 border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 appearance-none font-bold text-focusvalue"
                 style={{ letterSpacing: "1.5px" }}
                 autoComplete="off"
-                disabled={!formData.transaction_type}
+                disabled={!formData.transaction_type} // Disable if transaction_type is empty
               />
             </div>
 
             {/* Submit and Cancel Buttons */}
             <div className="flex justify-end mt-15">
-              <button
-                type="submit"
-                disabled={isSubmitDisabled()}
-                className="px-4 py-2 bg-deepBlue text-white rounded disabled:opacity-50 font-semibold hover:bg-blue-600"
-              >
-                Submit
-              </button>
+            <button
+              type="submit"
+              disabled={isSubmitDisabled()}
+              className={`px-4 py-2 bg-deepBlue text-white rounded font-semibold ${
+                isSubmitDisabled() ? "disabled:opacity-50" : "hover:bg-blue-600"
+              }`}
+            >
+              Submit
+            </button>
               <button
                 type="button"
                 onClick={onClose}
